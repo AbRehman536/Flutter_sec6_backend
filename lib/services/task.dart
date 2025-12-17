@@ -38,7 +38,7 @@ class TaskServices {
   }
 
 
-  ///Get All Task
+  ///Get All Tasks
   Stream<List<TaskModel>> getAllTask() {
     return FirebaseFirestore.instance
         .collection(taskCollection)
