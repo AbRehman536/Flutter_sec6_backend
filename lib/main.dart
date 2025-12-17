@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sec6_backend/views/create_task.dart';
+import 'package:flutter_sec6_backend/views/get_all_task.dart';
 
 void main() {
   runApp(const MyApp());
@@ -31,7 +32,7 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: CreateTask()
+      home: GetAllTask()
     );
   }
 }
