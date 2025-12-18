@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sec6_backend/model/task.dart';
 import 'package:flutter_sec6_backend/services/task.dart';
 import 'package:flutter_sec6_backend/views/create_task.dart';
+import 'package:flutter_sec6_backend/views/update_task.dart';
 import 'package:provider/provider.dart';
 
 class GetAllTask extends StatelessWidget {
@@ -28,7 +29,25 @@ class GetAllTask extends StatelessWidget {
                   leading: Icon(Icons.task),
                   title: Text(taskList[index].name.toString()),
                   subtitle: Text(taskList[index].description.toString()),
-                  trailing: Icon(Icons.arrow_forward),
+                  trailing: Row(
+                    children: [
+                      IconButton(onPressed: (){
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context)=>
+                                UpdateTask(model: taskList[index])));
+                      }, icon: Icon(Icons.edit)),
+                      IconButton(onPressed: ()async{
+                        try{
+                          await TaskServices().deleteTask(
+                            taskList[index].docId.toString()
+                          );
+                        }catch(e){
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(SnackBar(content: Text(e.toString())));
+                        }
+                      }, icon: Icon(Icons.delete)),
+                    ],
+                  ),
                 );
               },);
           },
