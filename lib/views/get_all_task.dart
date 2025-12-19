@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sec6_backend/model/task.dart';
 import 'package:flutter_sec6_backend/services/task.dart';
 import 'package:flutter_sec6_backend/views/create_task.dart';
+import 'package:flutter_sec6_backend/views/get_completed_task.dart';
+import 'package:flutter_sec6_backend/views/get_incompleted_task.dart';
 import 'package:flutter_sec6_backend/views/update_task.dart';
 import 'package:provider/provider.dart';
 
@@ -13,6 +15,16 @@ class GetAllTask extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("Get All Task"),
+        actions: [
+          IconButton(onPressed: (){
+            Navigator.push(context, MaterialPageRoute(
+                builder: (context)=>GetCompletedTask()));
+          }, icon: Icon(Icons.circle)),
+          IconButton(onPressed: (){
+            Navigator.push(context, MaterialPageRoute(
+                builder: (context)=>GetInCompletedTask()));
+          }, icon: Icon(Icons.circle_outlined)),
+        ],
       ),
       floatingActionButton: FloatingActionButton(onPressed: (){
         Navigator.push(context, MaterialPageRoute(builder: (context)=>CreateTask()));
@@ -31,6 +43,13 @@ class GetAllTask extends StatelessWidget {
                   subtitle: Text(taskList[index].description.toString()),
                   trailing: Row(
                     children: [
+                      Checkbox(
+                          value: taskList[index].isCompleted,
+                          onChanged: (val)async{
+                          await TaskServices().markAsCompletedTask(
+                              taskID: taskList[index].docId.toString(),
+                              isCompleted: val!);
+                          }),
                       IconButton(onPressed: (){
                         Navigator.push(context,
                             MaterialPageRoute(builder: (context)=>
