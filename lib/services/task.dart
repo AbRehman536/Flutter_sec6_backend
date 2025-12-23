@@ -78,4 +78,15 @@ class TaskServices {
         .toList()
     );
   }
+  ///Get Task by Priority ID
+    Future<List<TaskModel>> getTaskByPriorityID(String priorityID)async{
+    return await FirebaseFirestore.instance
+        .collection(taskCollection)
+        .where("priorityID" , isEqualTo: priorityID)
+        .get()
+        .then((taskList) => taskList.docs
+        .map((taskJson)=> TaskModel.fromJson(taskJson.data()))
+        .toList());
+
+    }
 }
