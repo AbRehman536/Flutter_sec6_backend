@@ -7,6 +7,7 @@ import 'package:flutter_sec6_backend/views/create_priority.dart';
 import 'package:flutter_sec6_backend/views/create_task.dart';
 import 'package:flutter_sec6_backend/views/get_completed_task.dart';
 import 'package:flutter_sec6_backend/views/get_incompleted_task.dart';
+import 'package:flutter_sec6_backend/views/get_priority_task.dart';
 import 'package:flutter_sec6_backend/views/update_task.dart';
 import 'package:provider/provider.dart';
 
@@ -20,7 +21,9 @@ class GetAllPriority extends StatelessWidget {
         title: Text("Get All Priority"),
       ),
       floatingActionButton: FloatingActionButton(onPressed: (){
-        Navigator.push(context, MaterialPageRoute(builder: (context)=>CreatePriority()));
+        Navigator.push(context, MaterialPageRoute(builder:
+            (context)=>CreatePriority(
+              model: PriorityModel(), isUpdatedMode: false,)));
       },child: Icon(Icons.add),),
       body: StreamProvider.value(
         value: PriorityServices().getAllPriority(),
@@ -45,6 +48,12 @@ class GetAllPriority extends StatelessWidget {
                             .showSnackBar(SnackBar(content: Text(e.toString())));
                       }
                     }, icon: Icon(Icons.delete)),
+                    IconButton(onPressed: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=>CreatePriority(model: PriorityModel(), isUpdatedMode: true)));
+                    }, icon: Icon(Icons.edit)),
+                    IconButton(onPressed: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=>GetPriorityTask(model: PriorityModel())));
+                    }, icon: Icon(Icons.arrow_forward_ios)),
                   ],
                 ),
               );

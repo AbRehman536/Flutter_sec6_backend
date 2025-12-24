@@ -5,7 +5,9 @@ import 'package:flutter_sec6_backend/services/priority.dart';
 import 'package:flutter_sec6_backend/services/task.dart';
 
 class CreatePriority extends StatefulWidget {
-  const CreatePriority({super.key});
+  final PriorityModel model;
+  final bool isUpdatedMode;
+  const CreatePriority({super.key, required this.model, required this.isUpdatedMode});
 
   @override
   State<CreatePriority> createState() => _CreatePriorityState();
@@ -14,13 +16,21 @@ class CreatePriority extends StatefulWidget {
 class _CreatePriorityState extends State<CreatePriority> {
   TextEditingController nameController = TextEditingController();
   bool isLoading = false;
-
+  @override
+  void initState(){
+    super.initState();
+    if(widget.isUpdatedMode == true){
+      nameController = TextEditingController(
+          text: widget.model.name.toString()
+      );
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Create Priority"),
-        backgroundColor: Colors.blue,
+        title: Text(widget.isUpdatedMode ? "Update Priority" : "Create Priority"),
+        backgroundColor: widget.isUpdatedMode ? Colors.blue : Colors.black,
         foregroundColor: Colors.white,
       ),
       body: Column(children: [
@@ -32,32 +42,57 @@ class _CreatePriorityState extends State<CreatePriority> {
           try{
             isLoading = true;
             setState(() {});
-            await PriorityServices().createPriority(PriorityModel(
-                name: nameController.text.toString(),
-                createdAt: DateTime.now().millisecondsSinceEpoch
-            )).then((value){
-              isLoading = false;
-              setState(() {});
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    content: Text("Create Successfully"),
-                    actions: [
-                      TextButton(onPressed: (){
-                        Navigator.pop(context);
-                      }, child: Text("Okay"))
-                    ],
-                  );
-                }, );
-            });
+            if(widget.isUpdatedMode == true){
+              await PriorityServices().updatePriority(PriorityModel(
+                  docId: widget.model.docId.toString(),
+                  name: nameController.text.toString(),
+                  createdAt: DateTime.now().millisecondsSinceEpoch
+              )).then((value){
+                isLoading = false;
+                setState(() {});
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      content: Text("Update Successfully"),
+                      actions: [
+                        TextButton(onPressed: (){
+                          Navigator.pop(context);
+                        }, child: Text("Okay"))
+                      ],
+                    );
+                  }, );
+              });
+            }
+            else{
+              await PriorityServices().createPriority(PriorityModel(
+                  name: nameController.text.toString(),
+                  createdAt: DateTime.now().millisecondsSinceEpoch
+              )).then((value){
+                isLoading = false;
+                setState(() {});
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      content: Text("Create Successfully"),
+                      actions: [
+                        TextButton(onPressed: (){
+                          Navigator.pop(context);
+                        }, child: Text("Okay"))
+                      ],
+                    );
+                  }, );
+              });
+            }
           }catch(e){
             isLoading = false;
             setState(() {});
             ScaffoldMessenger.of(context)
                 .showSnackBar(SnackBar(content: Text(e.toString())));
           }
-        }, child: Text("Create Priority"))
+        }, child: Text(widget.isUpdatedMode == true ?
+        "Update Priority ": "Create Priority"))
       ],),
     );
   }
